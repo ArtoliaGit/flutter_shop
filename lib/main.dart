@@ -9,10 +9,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: MaterialApp(
-        title: '百姓生活+',
-        debugShowCheckedModeBanner: false,
+        title: '百姓生活+', // app名字
+        debugShowCheckedModeBanner: false, // 取消ui界面debugger显示
         theme: ThemeData(
-          primaryColor: Colors.pink,
+          primaryColor: Colors.pink, // 主题颜色
         ),
         home: IndexPage(),
       ),
