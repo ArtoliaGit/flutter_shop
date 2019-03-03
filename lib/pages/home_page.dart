@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../service/service_method.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,76 +14,140 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  TextEditingController _textEditingController = TextEditingController();
-  String _showText = '欢迎来到天上人间';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('百姓生活+'),
+      ),
+      body: FutureBuilder(
+        future: getHomePageContent(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var data = json.decode(snapshot.data.toString());
+            List<Map> swiper = (data['data']['slides'] as List).cast();
+            List<Map> navigatorList = (data['data']['category'] as List).cast();
+            String adPicture = data['data']['advertesPicture']['PICTURE_ADDRESS'];
+            String leaderImage = data['data']['shopInfo']['leaderImage'];
+            String leaderPhone = data['data']['shopInfo']['leaderPhone'];
+            return Column(
+              children: <Widget>[
+                _SwiperDiy(swiperList: swiper),
+                _TopNavigator(navigatorList: navigatorList),
+                _AdBanner(adPicture: adPicture),
+                _LeaderPhone(leaderImage: leaderImage, leaderPhone: leaderPhone),
+              ],
+            );
+          } else {
+            return Center(
+              child: Text('加载中..........'),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _SwiperDiy extends StatelessWidget {
+
+  final List swiperList;
+
+  _SwiperDiy({Key key, @required this.swiperList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('美好人间'),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                TextField(
-                  controller: _textEditingController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10.0),
-                    labelText: '美女类型',
-                    helperText: '请输入你喜欢的类型',
-                  ),
-                  autofocus: false,
-                ),
-                RaisedButton(
-                  onPressed: _choiceAction,
-                  child: Text('选择完毕'),
-                ),
-                Text(
-                  _showText,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ],
-            ),
-          ),
-        ),
-        resizeToAvoidBottomPadding: false,
+      height: ScreenUtil().setHeight(333),
+      width: ScreenUtil().setWidth(750),
+      child: Swiper(
+        itemBuilder: (context, index) {
+          return Image.network('${swiperList[index]['image']}', fit: BoxFit.fill);
+        },
+        itemCount: swiperList.length,
+        pagination: SwiperPagination(),
+        autoplay: true,
+      ),
+    );
+  }
+}
+
+class _TopNavigator extends StatelessWidget {
+
+  final List navigatorList;
+
+  _TopNavigator({Key key, this.navigatorList}) : super(key: key);
+
+  Widget _gridViewItemUI(BuildContext context, Map item) {
+    return InkWell(
+      onTap: () {
+        print('点击');
+      },
+      child: Column(
+        children: <Widget>[
+          Image.network(item['image'], width: ScreenUtil().setWidth(95)),
+          Text(item['mallCategoryName']),
+        ],
       ),
     );
   }
 
-  void _choiceAction() {
-    print('开始选择......................');
-    if (_textEditingController.text.toString().isEmpty) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(title: Text('美女类型不能为空')),
-      );
-    } else {
-      _getHttp(_textEditingController.text.toString()).then((val) {
-        setState(() {
-          _showText = val['data']['name'].toString();
-        });
-      });
+  @override
+  Widget build(BuildContext context) {
+    if (navigatorList.length > 10) {
+      navigatorList.removeRange(10, navigatorList.length);
     }
+
+    return Container(
+      height: ScreenUtil().setHeight(320),
+      padding: const EdgeInsets.all(3.0),
+      child: GridView.count(
+        crossAxisCount: 5,
+        padding: const EdgeInsets.all(5.0),
+        children: navigatorList.map((item) {
+          return _gridViewItemUI(context, item);
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _AdBanner extends StatelessWidget {
+  final String adPicture;
+
+  _AdBanner({Key key, this.adPicture}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Image.network(adPicture),
+    );
+  }
+}
+
+class _LeaderPhone extends StatelessWidget {
+  final String leaderImage;
+  final String leaderPhone;
+
+  _LeaderPhone({Key key, this.leaderImage, this.leaderPhone}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: InkWell(
+        onTap: _callPhone,
+        child: Image.network(leaderImage),
+      ),
+    );
   }
 
-  Future _getHttp(String type) async {
-    try {
-      Response response;
-      var data = {
-        'name': type,
-      };
-      response = await Dio().get(
-        'https://www.easy-mock.com/mock/5c60131a4bed3a6342711498/baixing/dabaojian',
-        queryParameters: data,
-      );
-      return response.data;
-    } catch (e) {
-      return print('');
+  void _callPhone() async {
+    String tel = 'tel:$leaderPhone';
+    if (await canLaunch(tel)) {
+      await launch(tel);
+    } else {
+      throw Exception('拨打电话失败');
     }
   }
 }

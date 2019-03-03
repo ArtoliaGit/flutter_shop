@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
-import 'package:flutter_shop/config/httpHeader.dart';
+import 'package:flutter_shop/config/http_header.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
