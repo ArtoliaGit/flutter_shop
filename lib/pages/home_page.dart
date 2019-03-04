@@ -59,8 +59,8 @@ class _SwiperDiy extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      height: ScreenUtil().setHeight(333),
-      width: ScreenUtil().setWidth(750),
+      height: ScreenUtil.getInstance().setHeight(333),
+      width: ScreenUtil.getInstance().setWidth(750),
       child: Swiper(
         itemBuilder: (context, index) {
           return Image.network('${swiperList[index]['image']}', fit: BoxFit.fill);
@@ -86,7 +86,7 @@ class _TopNavigator extends StatelessWidget {
       },
       child: Column(
         children: <Widget>[
-          Image.network(item['image'], width: ScreenUtil().setWidth(95)),
+          Image.network(item['image'], width: ScreenUtil.getInstance().setWidth(95)),
           Text(item['mallCategoryName']),
         ],
       ),
@@ -100,7 +100,7 @@ class _TopNavigator extends StatelessWidget {
     }
 
     return Container(
-      height: ScreenUtil().setHeight(320),
+      height: ScreenUtil.getInstance().setHeight(320),
       padding: const EdgeInsets.all(3.0),
       child: GridView.count(
         crossAxisCount: 5,
