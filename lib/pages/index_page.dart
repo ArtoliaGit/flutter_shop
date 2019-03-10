@@ -41,11 +41,11 @@ class _IndexPageState extends State<IndexPage> {
   ];
 
   int _currentIndex = 0;
-  Widget _currentPage;
+//  Widget _currentPage;
 
   @override
   void initState() {
-    _currentPage = _tabBodies[_currentIndex];
+//    _currentPage = _tabBodies[_currentIndex];
     super.initState();
   }
 
@@ -61,11 +61,14 @@ class _IndexPageState extends State<IndexPage> {
         onTap: (index) {
           setState(() {
             _currentIndex = index;
-            _currentPage = _tabBodies[index];
+//            _currentPage = _tabBodies[index];
           });
         },
       ),
-      body: _currentPage,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _tabBodies,
+      ),
     );
   }
 }

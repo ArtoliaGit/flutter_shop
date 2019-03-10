@@ -4,6 +4,28 @@ import 'package:dio/dio.dart';
 
 import '../config/service_url.dart';
 
+Future request(url, { formData }) async {
+  try {
+    print('开始获取数据....................');
+    Response response;
+    Dio dio = Dio();
+    dio.options.contentType = ContentType.parse('application/x-www-form-urlencoded');
+    if (formData == null) {
+      response = await dio.post(servicePath[url]);
+    } else {
+      response = await dio.post(servicePath[url], data: formData);
+    }
+
+    if (response.statusCode == 200) {
+      return response.toString();
+    } else {
+      throw Exception('后端接口出现异常。');
+    }
+  } catch (e) {
+    print(e);
+  }
+}
+
 Future getHomePageContent() async {
   try {
     print('开始获取首页数据....................');
