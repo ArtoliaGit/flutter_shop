@@ -3,11 +3,18 @@ import 'package:provide/provide.dart';
 
 import 'pages/index_page.dart';
 import 'provide/countdown.dart';
+import 'provide/category_state.dart';
+import 'provide/category_goods_provide.dart';
 
 void main() {
   var countdown = Countdown();
+  var category = CategoryState();
+  var categoryGoods = CategoryGoodsProvide();
   var providers = Providers();
-  providers..provide(Provider<Countdown>.value(countdown));
+  providers
+    ..provide(Provider<Countdown>.value(countdown))
+    ..provide(Provider<CategoryState>.value(category))
+    ..provide(Provider<CategoryGoodsProvide>.value(categoryGoods));
   runApp(ProviderNode(child: MyApp(), providers: providers));
 }
 
