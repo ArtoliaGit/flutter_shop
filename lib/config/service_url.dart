@@ -4,4 +4,5 @@ const servicePath = {
   'homePageBelowConten': serviceUrl + 'wxmini/homePageBelowConten',
   'getCategory': serviceUrl + 'wxmini/getCategory',
   'getMallGoods': serviceUrl + 'wxmini/getMallGoods',
+  'getGoodDetailById': serviceUrl + 'wxmini/getGoodDetailById',
 };

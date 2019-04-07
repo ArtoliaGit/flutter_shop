@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../service/service_method.dart';
 import '../model/category_entity.dart';
@@ -273,8 +274,15 @@ class _MallGoodsState extends State<MallGoods> {
               request('getMallGoods', formData: formData).then((val) {
                 var data = json.decode(val);
                 MallGoodsEntity mallGoodsEntity = MallGoodsEntity.fromJson(data);
-
-                if (mallGoodsEntity == null) {
+                if (mallGoodsEntity.data == null) {
+                  Fluttertoast.showToast(
+                    msg: '已全部加载',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    backgroundColor: Colors.pink,
+                    textColor: Colors.white,
+                    fontSize: 16.0
+                  );
                   Provide.value<CategoryState>(context).changeNoLoadMore('没有更多');
                 } else {
                   Provide.value<CategoryGoodsProvide>(context).getMoreMallGoodsList(mallGoodsEntity?.data ?? []);
