@@ -8,9 +8,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../service/service_method.dart';
 import '../model/category_entity.dart';
-import '../provide/category_state.dart';
 import '../model/mall_goods_entity.dart';
+import '../provide/category_state.dart';
 import '../provide/category_goods_provide.dart';
+import '../routers/application.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -344,28 +345,33 @@ class _MallGoodsState extends State<MallGoods> {
   }
 
   Widget _listItemWidget(List<MallGoodsData> list, int index) {
-    return Container(
-      width: ScreenUtil.getInstance().setWidth(550),
-      height: ScreenUtil.getInstance().setHeight(200),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          bottom: BorderSide(
-            width: 1.0,
-            color: Colors.black12,
+    return InkWell(
+      onTap: () {
+        Application.router.navigateTo(context, '/detail?id=${list[index].goodsid}');
+      },
+      child: Container(
+        width: ScreenUtil.getInstance().setWidth(550),
+        height: ScreenUtil.getInstance().setHeight(200),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            bottom: BorderSide(
+              width: 1.0,
+              color: Colors.black12,
+            ),
           ),
         ),
-      ),
-      child: Row(
-        children: <Widget>[
-          _goodsImageWidget(list, index),
-          Column(
-            children: <Widget>[
-              _goodsNameWidget(list, index),
-              _goodsPriceWidget(list, index),
-            ],
-          ),
-        ],
+        child: Row(
+          children: <Widget>[
+            _goodsImageWidget(list, index),
+            Column(
+              children: <Widget>[
+                _goodsNameWidget(list, index),
+                _goodsPriceWidget(list, index),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
